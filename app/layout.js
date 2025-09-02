@@ -27,7 +27,6 @@ export default function RootLayout({ children }) {
         <footer className="py-6 border-t border-gray-800 mt-auto">
           <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
             <p>© {new Date().getFullYear()} School Directory. All rights reserved.</p>
-            <p className="mt-1">Built with ❤️ using Next.js 14 and Neon PostgreSQL</p>
           </div>
         </footer>
 

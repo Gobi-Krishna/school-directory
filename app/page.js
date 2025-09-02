@@ -10,10 +10,7 @@ export default function Home() {
         <h1 className="text-4xl font-extrabold mb-4 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
           School Directory
         </h1>
-        <p className="text-gray-400 max-w-2xl mx-auto">
-          Easily manage and view school information in one centralized location.
-          Add new schools, view details, and keep your directory up to date.
-        </p>
+
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -46,18 +43,6 @@ export default function Home() {
             <p className="text-gray-400 text-center">Browse all schools in the directory</p>
           </div>
         </a>
-      </div>
-
-      <div className="mt-12 p-4 bg-gray-800/50 rounded-xl border border-gray-700 max-w-2xl mx-auto">
-        <div className="flex items-start space-x-3">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-gray-400 text-sm">
-            This application uses a secure PostgreSQL database hosted on Neon.
-            No data is stored locally on your device.
-          </p>
-        </div>
       </div>
     </div>
   );
