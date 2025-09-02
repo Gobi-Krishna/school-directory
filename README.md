@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🏫 School Directory (Next.js + MySQL)
 
-## Getting Started
+A simple School Directory project built with Next.js 15 (App Router) and MySQL (hosted on Railway).
+It allows you to add, view, and delete schools with a clean UI.
 
-First, run the development server:
+🚀 Features
 
-```bash
+Add new schools with details (name, address, city, state, contact, image, email).
+
+View all schools in a responsive card layout.
+
+Delete schools directly from the UI.
+
+MySQL backend with Railway hosting.
+
+Deployed on Vercel.
+
+📂 Project Structure
+school-app/
+├── app/
+│   ├── addSchool/         # UI page for adding schools
+│   │   └── page.jsx
+│   ├── showSchools/       # UI page for listing schools
+│   │   └── page.jsx
+│   ├── api/               # API routes
+│   │   ├── addSchool/route.js
+│   │   ├── getSchools/route.js
+│   │   └── deleteSchool/route.js
+│   ├── layout.js
+│   └── page.js            # Homepage
+├── components/
+│   └── SchoolCard.jsx     # Card component for schools
+├── lib/
+│   └── db.js              # MySQL connection helper
+├── public/
+│   └── schoolImages/      # (Optional) Static school images
+├── styles/
+│   └── globals.css
+├── .env.local             # Local environment variables (ignored by Git)
+├── package.json
+└── README.md
+
+⚙️ Setup Instructions
+1️⃣ Clone Repo
+git clone https://github.com/<your-username>/school-directory.git
+cd school-directory
+
+2️⃣ Install Dependencies
+npm install
+
+3️⃣ Database Setup
+Option A: Import from SQL file
+
+If you have a schoolDB.sql file:
+
+mysql -u <username> -p < database_name < schoolDB.sql
+
+Option B: Create Table Manually
+
+Run this in MySQL:
+
+CREATE DATABASE schoolDB;
+USE schoolDB;
+
+CREATE TABLE schools (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name TEXT,
+  address TEXT,
+  city TEXT,
+  state TEXT,
+  contact VARCHAR(15),
+  image TEXT,
+  email_id TEXT
+);
+
+4️⃣ Configure Environment Variables
+Local (create .env.local in root):
+DATABASE_URL=mysql://username:password@host:port/database
+
+Vercel:
+
+Go to Project → Settings → Environment Variables.
+
+Add:
+
+DATABASE_URL → same value as above.
+
+▶️ Running the Project
+Development
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Visit: http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Production
+npm run build
+npm start
 
-## Learn More
+🌐 Live Demo
 
-To learn more about Next.js, take a look at the following resources:
+👉 https://your-vercel-app.vercel.app
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+📌 API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+POST /api/addSchool → Add a school
 
-## Deploy on Vercel
+GET /api/getSchools → Get all schools
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+POST /api/deleteSchool → Delete a school

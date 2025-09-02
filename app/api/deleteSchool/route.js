@@ -1,37 +1,55 @@
-import { getPool } from "@/lib/db";
-import { promises as fs } from "fs";
-import path from "path";
+// app/api/deleteSchool/route.js
+import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/db"; // <-- Correct import
 
-export const dynamic = "force-dynamic";
+export async function POST(req) {
+    let client;
+    console.log("🚀 /api/deleteSchool POST called");
 
-export async function DELETE(req) {
     try {
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get("id");
+        const { id } = await req.json();
+        console.log("📥 Request Body ID:", id);
 
         if (!id) {
-            return Response.json({ message: "Missing id" }, { status: 400 });
+            console.warn("❌ Validation failed: ID missing");
+            return NextResponse.json(
+                { error: "School ID is required" },
+                { status: 400 }
+            );
         }
 
-        const pool = getPool();
+        client = await connectDB(); // <-- Connect here
 
-        // Get image path before delete
-        const [rows] = await pool.query("SELECT image FROM schools WHERE id = ?", [id]);
-        if (rows.length > 0 && rows[0].image) {
-            const imagePath = path.join(process.cwd(), "public", rows[0].image);
+        const query = "DELETE FROM schools WHERE id = $1";
+        console.log("📤 Executing query:", query, "with ID:", id);
+        await client.query(query, [id]);
+        console.log("📤 Query executed successfully");
+
+        return NextResponse.json({
+            success: true,
+            message: "School deleted successfully"
+        });
+
+    } catch (err) {
+        console.error("❌ Delete School Error:", err);
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Failed to delete school",
+                details: err.message
+            },
+            { status: 500 }
+        );
+    } finally {
+        // Close connection
+        if (client) {
             try {
-                await fs.unlink(imagePath); // delete the file if exists
-            } catch (e) {
-                console.warn("Image file not found:", imagePath);
+                console.log("🔒 Closing database connection...");
+                await client.end();
+                console.log("🔒 Database connection closed");
+            } catch (closeErr) {
+                console.error('⚠️ Error closing database client:', closeErr);
             }
         }
-
-        // Delete from DB
-        await pool.query("DELETE FROM schools WHERE id = ?", [id]);
-
-        return Response.json({ message: "School deleted successfully" }, { status: 200 });
-    } catch (err) {
-        console.error("Delete School Error:", err);
-        return Response.json({ message: "Error deleting school" }, { status: 500 });
     }
 }
