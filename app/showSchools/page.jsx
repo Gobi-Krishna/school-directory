@@ -2,6 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import SchoolCard from "@/components/SchoolCard";
+import SchoolDetailsModal from "@/components/SchoolDetailsModal";
 
 export default function ShowSchoolsPage() {
     const [schools, setSchools] = useState([]);
@@ -9,9 +10,12 @@ export default function ShowSchoolsPage() {
     const [status, setStatus] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
+    const [selectedSchool, setSelectedSchool] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const fetchSchools = async () => {
         setIsLoading(true);
-        setMessage(""); // Clear previous messages
+        setMessage("");
         try {
             const res = await fetch("/api/getSchools");
             if (!res.ok) {
@@ -23,20 +27,35 @@ export default function ShowSchoolsPage() {
             console.error("Error fetching schools:", error);
             setMessage("Failed to load schools. Please try again later.");
             setStatus("error");
-            setSchools([]); // Ensure schools is an empty array on error
+            setSchools([]);
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Example of handling delete (you can adapt your existing logic)
-    // const handleDelete = async (id) => { ... }
+    const openModal = (school) => {
+        setSelectedSchool(school);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedSchool(null);
+    };
+
+    // --- New Function to Handle Delete Callback ---
+    const handleSchoolDeleted = (deletedSchoolId) => {
+        // Remove the deleted school from the local state
+        setSchools(prevSchools => prevSchools.filter(school => school.id !== deletedSchoolId));
+        setMessage("School deleted successfully.");
+        setStatus("success");
+        // Optionally, clear the success message after a few seconds
+        // setTimeout(() => setMessage(""), 3000);
+    };
+    // --- End New Function ---
 
     useEffect(() => {
         fetchSchools();
-        // Listen for school additions from other tabs/actions if needed
-        // window.addEventListener('schoolAdded', fetchSchools);
-        // return () => window.removeEventListener('schoolAdded', fetchSchools);
     }, []);
 
     if (isLoading) {
@@ -66,34 +85,30 @@ export default function ShowSchoolsPage() {
             {/* School Grid */}
             {schools.length === 0 ? (
                 <div className="text-center py-12 bg-gray-800/50 rounded-xl border border-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h3 className="mt-4 text-lg font-medium text-gray-200">No schools found</h3>
-                    <p className="mt-1 text-gray-500">It looks like there are no schools listed yet.</p>
-                    <div className="mt-6">
-                        <a
-                            href="/addSchool"
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                            Add the First School
-                        </a>
-                    </div>
+                    {/* ... (empty state content) ... */}
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {schools.map((school) => (
-                        <SchoolCard key={school.id} school={school} /* onDelete={handleDelete} */ />
-                    ))}
-                </div>
+                <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {schools.map((school) => (
+                            <SchoolCard key={school.id} school={school} onClick={() => openModal(school)} />
+                        ))}
+                    </div>
+
+                    <div className="mt-6 text-center text-sm text-gray-500">
+                        Showing {schools.length} school{schools.length !== 1 ? 's' : ''}
+                    </div>
+                </>
             )}
 
-            {/* School Count */}
-            {schools.length > 0 && (
-                <div className="mt-6 text-center text-sm text-gray-500">
-                    Showing {schools.length} school{schools.length !== 1 ? 's' : ''}
-                </div>
-            )}
+            {/* --- Render the Modal with onDelete handler --- */}
+            <SchoolDetailsModal
+                school={selectedSchool}
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onDelete={handleSchoolDeleted}
+            />
+            {/* --- End Modal --- */}
         </div>
     );
 }
