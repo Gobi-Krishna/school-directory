@@ -96,7 +96,7 @@ npm start
 
 
  Live Demo
-👉 https://school-directory-1hv6zbvqm-krishnas-projects-22da20ec.vercel.app/
+👉 https://school-directory-delta.vercel.app/
 
 📌 API Endpoints
 POST /api/addSchool → Add a new school to the database.
