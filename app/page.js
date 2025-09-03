@@ -1,4 +1,4 @@
-// app/page.js
+
 export default function Home() {
   return (
     <div className="w-full">
@@ -8,9 +8,11 @@ export default function Home() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
             Find the Perfect School for Your Child
           </h1>
+          {/* Line 12: Escape the apostrophe */}
           <p className="mt-4 text-lg sm:text-xl max-w-3xl mx-auto text-blue-100">
-            Explore our comprehensive directory of schools. Search, compare, and connect with educational institutions that match your family's needs.
+            Explore our comprehensive directory of schools. Search, compare, and connect with educational institutions that match your family&#39;s needs.
           </p>
+          {/* --- End of fix --- */}
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/showSchools"
